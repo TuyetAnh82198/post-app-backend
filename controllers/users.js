@@ -1,15 +1,15 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const UsersModel = require("../models/User.js");
-const SessionModel = require("../models/Session.js");
 
 //hàm xử lý việc đăng ký
 const signup = async (req, res) => {
   try {
     const errors = validationResult(req);
     const err = [];
-    errors.array().map((error) => {
+    errors.array().forEach((error) => {
       err.push({ msg: error.msg, path: error.path });
     });
     // console.log(err);
@@ -30,7 +30,7 @@ const signup = async (req, res) => {
       }
     }
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 //hàm xử lý việc đăng nhập
@@ -38,7 +38,7 @@ const login = async (req, res) => {
   try {
     const errors = validationResult(req);
     const err = [];
-    errors.array().map((error) => {
+    errors.array().forEach((error) => {
       err.push({ msg: error.msg, path: error.path });
     });
     if (!errors.isEmpty()) {
@@ -51,15 +51,21 @@ const login = async (req, res) => {
           existingUser.pass
         );
         if (correctPass) {
-          const id = (Math.random() * 10).toString();
-          req.session.isLoggedIn = true;
-          req.session.user = {
-            _id: id,
-            email: existingUser.email,
-          };
+          const token = jwt.sign(
+            { email: existingUser.email },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "1d",
+            }
+          );
+          res.cookie("user", token, {
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: false,
+            // secure: false,
+          });
           return res
             .status(200)
-            .json({ err: [], message: "You are logged in!", user: id });
+            .json({ err: [], message: "You are logged in!" });
         } else {
           return res
             .status(400)
@@ -72,33 +78,31 @@ const login = async (req, res) => {
       }
     }
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 //hàm kiểm tra người dùng đã đăng nhập chưa
-const checkLogin = async (req, res) => {
+const checkLogin = (req, res) => {
   try {
-    const session = await SessionModel.findOne({
-      "session.user._id": req.params.user,
+    // console.log(req.cookies.user);
+    jwt.verify(req.cookies.user, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.status(200).json({ message: "have not been logged in yet" });
+      } else {
+        res.status(200).json({ message: "You are logged in" });
+      }
     });
-    if (session) {
-      res.status(200).json({ err: [], message: "You are logged in" });
-    } else {
-      res.status(400).json({ err: [], message: "have not been logged in yet" });
-    }
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 //hàm xử lý việc đăng xuất
-const logout = async (req, res) => {
+const logout = (req, res) => {
   try {
-    await SessionModel.deleteOne({
-      "session.user._id": req.params.user,
-    });
+    res.clearCookie("user");
     return res.status(200).json({ message: "You are logged out!" });
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 module.exports = { signup, login, checkLogin, logout };

@@ -1,5 +1,4 @@
 const PostModel = require("../models/Post.js");
-const SessionModel = require("../models/Session.js");
 const io = require("../socket.js");
 
 //hàm lưu bài đăng và ảnh vào cơ sở dữ liệu
@@ -12,11 +11,7 @@ const post = async (req, res) => {
     } else if (!req.file) {
       return res.status(400).json({ message: "jpg, jpeg, png accepted" });
     } else {
-      const session = await SessionModel.findOne({
-        "session.user._id": req.body.user,
-      });
-      //   console.log(session);
-      const email = session._doc.session.user.email;
+      const email = req.user.email;
       const newPost = new PostModel({
         title: req.body.title,
         content: req.body.content,
@@ -30,7 +25,7 @@ const post = async (req, res) => {
       return res.status(201).json({ message: "Posted!" });
     }
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}}/server-error`);
   }
 };
 const getPosts = async (req, res) => {
@@ -38,7 +33,7 @@ const getPosts = async (req, res) => {
     const posts = await PostModel.find();
     return res.status(200).json({ result: posts });
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 //hàm cập nhật bài đăng và ảnh trong cơ sở dữ liệu
@@ -64,7 +59,7 @@ const updatePost = async (req, res) => {
       return res.status(200).json({ message: "Updated!" });
     }
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 const deletePost = async (req, res) => {
@@ -74,7 +69,7 @@ const deletePost = async (req, res) => {
     io.getIO().emit("posts", { action: "delete", deleteResult: posts });
     return res.status(200).json({ message: "Deleted!" });
   } catch (err) {
-    return res.redirect("http://localhost:3000/server-error");
+    return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
 };
 

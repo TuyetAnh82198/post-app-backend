@@ -1,5 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
+const isAuth = require("../middleware/isAuth.js");
 
 const {
   signup,
@@ -42,7 +43,7 @@ route.post(
   ],
   login
 );
-route.get("/check-login/:user", checkLogin);
-route.get("/logout/:user", logout);
+route.get("/check-login", checkLogin);
+route.get("/logout", isAuth, logout);
 
 module.exports = route;

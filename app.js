@@ -1,36 +1,33 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session")(session);
-const store = new MongoDBStore({
-  uri: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@users.nyp2s8t.mongodb.net/post?retryWrites=true&w=majority`,
-  collection: "sessions",
-});
+const cookieParse = require("cookie-parser");
 const path = require("path");
+const helmet = require("helmet");
+const compression = require("compression");
 
 const users = require("./routes/users.js");
 const posts = require("./routes/posts.js");
+const isAuth = require("./middleware/isAuth.js");
 
 const app = express();
 
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
-app.set("trust proxy", 1);
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
 app.use(
-  session({
-    secret: "mysecret",
-    resave: false,
-    saveUninitialized: false,
-    store: store,
+  cors({
+    origin: process.env.CLIENT_APP,
+    credentials: true,
   })
 );
+app.use(compression());
+app.use(cookieParse());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use("/users", users);
-app.use("/posts", posts);
+app.use("/posts", isAuth, posts);
 
 mongoose
   .connect(
