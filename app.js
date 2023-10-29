@@ -20,6 +20,7 @@ app.use(
       directives: {
         "script-src": ["'self'", `${process.env.CLIENT_APP}`],
         "style-src": ["'self'", `${process.env.CLIENT_APP}`],
+        "img-src": ["'self'", `${process.env.CLIENT_APP}`]
       },
     },
   })
