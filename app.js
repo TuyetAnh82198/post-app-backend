@@ -14,7 +14,9 @@ const app = express();
 
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
-app.use(helmet());
+app.use(helmet({
+    xContentTypeOptions: false,
+  }));
 app.use(
   cors({
     origin: process.env.CLIENT_APP,
