@@ -26,6 +26,10 @@ app.use(cookieParse());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json");
+  next();
+});
 app.use("/users", users);
 app.use("/posts", isAuth, posts);
 
