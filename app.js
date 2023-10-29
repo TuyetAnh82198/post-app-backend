@@ -15,6 +15,16 @@ const app = express();
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
 app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'", `${process.env.CLIENT_APP}`],
+        "style-src": ["'self'", `${process.env.CLIENT_APP}`],
+      },
+    },
+  })
+);
+app.use(
   cors({
     origin: process.env.CLIENT_APP,
     credentials: true,
