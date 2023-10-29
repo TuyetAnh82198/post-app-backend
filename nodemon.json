@@ -2,7 +2,7 @@
   "env": {
     "MONGO_USER": "tuyetanh14102023",
     "MONGO_PASS": "PDqQAHKRoaGJfjSk",
-    "CLIENT_APP": "http://localhost:3000",
+    "CLIENT_APP": "https://post-app-166c8.web.app",
     "JWT_SECRET": "mysecret"
   }
 }
