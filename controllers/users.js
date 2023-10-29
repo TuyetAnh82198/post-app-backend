@@ -85,16 +85,13 @@ const login = async (req, res) => {
 const checkLogin = (req, res) => {
   try {
     if(!req.cookies.user){
-      res.setHeader("Content-Type", "application/json");
       res.status(200).json({ message: "have not been logged in yet" });
     }
     else{
     jwt.verify(req.cookies.user, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        res.setHeader("Content-Type", "application/json");
         res.status(200).json({ message: "have not been logged in yet" });
       } else {
-        res.setHeader("Content-Type", "application/json");
         res.status(200).json({ message: "You are logged in" });
       }
     });}
