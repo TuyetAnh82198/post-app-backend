@@ -14,19 +14,7 @@ const app = express();
 
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "script-src": ["'self'", `${process.env.CLIENT_APP}`],
-        "style-src": ["'self'", `${process.env.CLIENT_APP}`],
-        "img-src": ["'self'", `${process.env.CLIENT_APP}`]
-      },
-      crossOriginResourcePolicy: false,
-      xContentTypeOptions: false,
-    },
-  })
-);
+app.use(helmet());
 app.use(
   cors({
     origin: process.env.CLIENT_APP,
@@ -37,6 +25,13 @@ app.use(compression());
 app.use(cookieParse());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+});
 
 app.use("/users", users);
 app.use("/posts", isAuth, posts);
