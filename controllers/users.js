@@ -60,8 +60,8 @@ const login = async (req, res) => {
           );
           res.cookie("user", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            httpOnly: false,
-            // secure: false,
+            httpOnly: true,
+            secure: true,
           });
           return res
             .status(200)
