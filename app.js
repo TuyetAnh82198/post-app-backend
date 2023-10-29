@@ -22,6 +22,8 @@ app.use(
         "style-src": ["'self'", `${process.env.CLIENT_APP}`],
         "img-src": ["'self'", `${process.env.CLIENT_APP}`]
       },
+      crossOriginResourcePolicy: false,
+      xContentTypeOptions: false,
     },
   })
 );
