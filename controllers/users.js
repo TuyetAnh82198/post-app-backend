@@ -84,14 +84,17 @@ const login = async (req, res) => {
 //hàm kiểm tra người dùng đã đăng nhập chưa
 const checkLogin = (req, res) => {
   try {
-    // console.log(req.cookies.user);
+    if(!req.cookies.user){
+      res.status(200).json({ message: "have not been logged in yet" });
+    }
+    else{
     jwt.verify(req.cookies.user, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         res.status(200).json({ message: "have not been logged in yet" });
       } else {
         res.status(200).json({ message: "You are logged in" });
       }
-    });
+    });}
   } catch (err) {
     return res.redirect(`${process.env.CLIENT_APP}/server-error`);
   }
