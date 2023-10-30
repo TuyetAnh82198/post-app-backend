@@ -3,7 +3,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParse = require("cookie-parser");
 const path = require("path");
-const helmet = require("helmet");
 const compression = require("compression");
 
 const users = require("./routes/users.js");
@@ -14,7 +13,6 @@ const app = express();
 
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
-app.use(helmet());
 app.use(
   cors({
     origin: process.env.CLIENT_APP,
