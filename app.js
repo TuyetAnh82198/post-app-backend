@@ -39,7 +39,7 @@ mongoose
   )
   .then((result) => {
     const io = require("./socket.js").init(
-      app.listen(process.env.PORT || 5000, ()=>console.log("Server running"))
+      app.listen(process.env.PORT || 5000)
     );
     io.on("connect", (socket) => {
       socket.on("disconnect", () => {});
