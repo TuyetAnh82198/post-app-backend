@@ -18,11 +18,6 @@ app.use(helmet());
 app.use(
   cors({
     origin: process.env.CLIENT_APP,
-    allowedHeaders: [
-      "Content-Type",
-      "Access-Control-Allow-Origin",
-      "Access-Control-Allow-Credentials",
-    ],
     credentials: true,
   })
 );
