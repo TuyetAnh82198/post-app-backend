@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParse = require("cookie-parser");
 const path = require("path");
+const helmet = require('helmet');
 const compression = require("compression");
 
 const users = require("./routes/users.js");
