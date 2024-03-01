@@ -1,8 +1,0 @@
-{
-  "env": {
-    "MONGO_USER": "tuyetanh14102023",
-    "MONGO_PASS": "PDqQAHKRoaGJfjSk",
-    "CLIENT_APP": "https://post-app-2rt8.onrender.com",
-    "JWT_SECRET": "mysecret"
-  }
-}
